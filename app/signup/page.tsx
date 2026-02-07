@@ -24,6 +24,7 @@ export default function SignupPage() {
     addDebug('Component mounted')
     addDebug(`NEXT_PUBLIC_SUPABASE_URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET'}`)
     addDebug(`NEXT_PUBLIC_SUPABASE_ANON_KEY: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET (length: ' + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length + ')' : 'NOT SET'}`)
+    addDebug(`NEXT_PUBLIC_SITE_URL: ${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}`)
   }, [])
 
   // Check subdomain availability
@@ -125,12 +126,16 @@ export default function SignupPage() {
       
       addDebug('Supabase client created')
       
+      // Construct redirect URL
+      const redirectUrl = `${window.location.origin}/api/auth/callback`
+      addDebug(`Redirect URL: ${redirectUrl}`)
+      
       // Start OAuth
       addDebug('Calling signInWithOAuth')
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/api/auth/callback`,
+          redirectTo: redirectUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
