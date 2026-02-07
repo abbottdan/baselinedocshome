@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +12,19 @@ export default function SignupPage() {
   const [subdomainStatus, setSubdomainStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [debugInfo, setDebugInfo] = useState<string[]>([])
+
+  // Debug logging
+  const addDebug = (message: string) => {
+    console.log('[DEBUG]', message)
+    setDebugInfo(prev => [...prev, `${new Date().toISOString()}: ${message}`])
+  }
+
+  useEffect(() => {
+    addDebug('Component mounted')
+    addDebug(`NEXT_PUBLIC_SUPABASE_URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET'}`)
+    addDebug(`NEXT_PUBLIC_SUPABASE_ANON_KEY: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET (length: ' + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length + ')' : 'NOT SET'}`)
+  }, [])
 
   // Check subdomain availability
   const checkSubdomain = async (subdomain: string) => {
@@ -21,7 +33,9 @@ export default function SignupPage() {
       return
     }
 
+    addDebug(`Checking subdomain: ${subdomain}`)
     setSubdomainStatus('checking')
+    
     try {
       const res = await fetch('/api/check-subdomain', {
         method: 'POST',
@@ -29,6 +43,8 @@ export default function SignupPage() {
         body: JSON.stringify({ subdomain }),
       })
       const data = await res.json()
+      addDebug(`Subdomain check result: ${JSON.stringify(data)}`)
+      
       setSubdomainStatus(data.available ? 'available' : 'taken')
       if (!data.available) {
         setErrors(prev => ({ ...prev, subdomain: data.message }))
@@ -36,6 +52,7 @@ export default function SignupPage() {
         setErrors(prev => ({ ...prev, subdomain: '' }))
       }
     } catch (error) {
+      addDebug(`Subdomain check error: ${error}`)
       setSubdomainStatus('idle')
     }
   }
@@ -51,40 +68,69 @@ export default function SignupPage() {
   }
 
   const handleGoogleSignup = async () => {
+    addDebug('Google signup clicked')
     setErrors({})
 
-    // Validate company name and subdomain
+    // Validate
     if (!formData.companyName || formData.companyName.length < 2) {
+      addDebug('Validation failed: company name too short')
       setErrors({ companyName: 'Company name must be at least 2 characters' })
       return
     }
 
     if (!formData.subdomain || formData.subdomain.length < 3) {
+      addDebug('Validation failed: subdomain too short')
       setErrors({ subdomain: 'Subdomain must be at least 3 characters' })
       return
     }
 
     if (subdomainStatus === 'taken') {
+      addDebug('Validation failed: subdomain taken')
       setErrors({ subdomain: 'This subdomain is already taken' })
       return
     }
 
     setIsSubmitting(true)
+    addDebug('Starting OAuth flow')
 
     try {
-      // Store signup data in sessionStorage (will survive OAuth redirect)
-      sessionStorage.setItem('signup_data', JSON.stringify({
+      // Check if Supabase is initialized
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        throw new Error('Supabase URL not configured')
+      }
+      
+      if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        throw new Error('Supabase anon key not configured')
+      }
+
+      // Store signup data
+      const signupData = {
         companyName: formData.companyName,
         subdomain: formData.subdomain,
         action: 'signup',
         timestamp: Date.now(),
-      }))
-
-      // Redirect to Google OAuth
+      }
+      
+      addDebug(`Storing signup data: ${JSON.stringify(signupData)}`)
+      sessionStorage.setItem('signup_data', JSON.stringify(signupData))
+      
+      // Import Supabase dynamically
+      addDebug('Importing Supabase client')
+      const { createClient } = await import('@supabase/supabase-js')
+      
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      )
+      
+      addDebug('Supabase client created')
+      
+      // Start OAuth
+      addDebug('Calling signInWithOAuth')
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/api/auth/callback`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -93,16 +139,19 @@ export default function SignupPage() {
       })
 
       if (error) {
-        console.error('OAuth error:', error)
-        setErrors({ general: 'Failed to start Google sign-in' })
+        addDebug(`OAuth error: ${JSON.stringify(error)}`)
+        setErrors({ general: `OAuth failed: ${error.message}` })
         setIsSubmitting(false)
         return
       }
 
-      // User will be redirected to Google
-    } catch (error) {
+      addDebug(`OAuth response: ${JSON.stringify(data)}`)
+      addDebug('User should be redirected to Google')
+
+    } catch (error: any) {
+      addDebug(`Signup error: ${error.message}`)
       console.error('Signup error:', error)
-      setErrors({ general: 'An unexpected error occurred' })
+      setErrors({ general: error.message || 'An unexpected error occurred' })
       setIsSubmitting(false)
     }
   }
@@ -133,6 +182,20 @@ export default function SignupPage() {
             </div>
           )}
 
+          {/* Debug Panel */}
+          {debugInfo.length > 0 && (
+            <details className="mb-6 bg-gray-50 border rounded-lg p-4">
+              <summary className="cursor-pointer font-semibold text-sm text-gray-700">
+                🐛 Debug Info (Click to expand)
+              </summary>
+              <div className="mt-2 text-xs font-mono space-y-1 max-h-60 overflow-y-auto">
+                {debugInfo.map((info, i) => (
+                  <div key={i} className="text-gray-600">{info}</div>
+                ))}
+              </div>
+            </details>
+          )}
+
           <div className="space-y-6">
             {/* Company Name */}
             <div>
@@ -140,7 +203,10 @@ export default function SignupPage() {
               <input
                 type="text"
                 value={formData.companyName}
-                onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, companyName: e.target.value }))
+                  addDebug(`Company name changed: ${e.target.value}`)
+                }}
                 className={`w-full px-4 py-3 border rounded-lg ${errors.companyName ? 'border-red-500' : 'border-gray-300'}`}
                 placeholder="Acme Corporation"
                 required
@@ -206,22 +272,6 @@ export default function SignupPage() {
               {' '}and{' '}
               <Link href="/legal/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link>
             </p>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Why Google?</span>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-gray-700">
-                <strong>Secure & Simple:</strong> Sign in with Google keeps your account secure and makes logging in effortless. 
-                No passwords to remember, and you'll be logged in automatically across devices.
-              </p>
-            </div>
           </div>
         </div>
       </div>
