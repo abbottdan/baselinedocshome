@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -68,20 +69,42 @@ export default function SignupPage() {
       return
     }
 
-    // Store signup data in sessionStorage for after OAuth
-    sessionStorage.setItem('signup_data', JSON.stringify(formData))
+    setIsSubmitting(true)
 
-    // Redirect to Google OAuth with state parameter
-    const state = encodeURIComponent(JSON.stringify({
-      action: 'signup',
-      subdomain: formData.subdomain,
-      companyName: formData.companyName,
-    }))
+    try {
+      // Store signup data in sessionStorage (will survive OAuth redirect)
+      sessionStorage.setItem('signup_data', JSON.stringify({
+        companyName: formData.companyName,
+        subdomain: formData.subdomain,
+        action: 'signup',
+        timestamp: Date.now(),
+      }))
 
-    const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    
-    window.location.href = `${supabaseUrl}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}&state=${state}`
+      // Redirect to Google OAuth
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+
+      if (error) {
+        console.error('OAuth error:', error)
+        setErrors({ general: 'Failed to start Google sign-in' })
+        setIsSubmitting(false)
+        return
+      }
+
+      // User will be redirected to Google
+    } catch (error) {
+      console.error('Signup error:', error)
+      setErrors({ general: 'An unexpected error occurred' })
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -157,12 +180,12 @@ export default function SignupPage() {
             <button
               onClick={handleGoogleSignup}
               disabled={isSubmitting || subdomainStatus === 'taken' || subdomainStatus === 'checking' || !formData.companyName || !formData.subdomain}
-              className="w-full py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center gap-3 transition"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Processing...
+                  Connecting to Google...
                 </>
               ) : (
                 <>
