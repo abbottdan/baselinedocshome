@@ -81,8 +81,6 @@ export default function PricingPage() {
                 "500 documents",
                 "2 GB storage",
                 "Everything in Starter, plus:",
-                "Advanced search & filters",
-                "Project tracking",
                 "Priority email support",
                 "Onboarding assistance",
               ]}
@@ -152,11 +150,12 @@ export default function PricingPage() {
                 <ComparisonRow feature="Approval Workflows" starter={true} professional={true} enterprise={true} />
                 <ComparisonRow feature="Audit Trail" starter={true} professional={true} enterprise={true} />
                 <ComparisonRow feature="Document Types" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Advanced Search" starter={false} professional={true} enterprise={true} />
-                <ComparisonRow feature="Project Tracking" starter={false} professional={true} enterprise={true} />
-                <ComparisonRow feature="Priority Support" starter={false} professional={true} enterprise={true} />
-                <ComparisonRow feature="Onboarding Assistance" starter={false} professional={true} enterprise={true} />
-                <ComparisonRow feature="Dedicated Account Manager" starter={false} professional={false} enterprise={true} />
+                <ComparisonRow feature="Search & Filter" starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Project Association" starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="File Attachments" starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Email Support" starter="Standard" professional="Priority" enterprise="24/7" />
+                <ComparisonRow feature="Onboarding Call" starter={false} professional={true} enterprise={true} />
+                <ComparisonRow feature="Account Manager" starter={false} professional={false} enterprise={true} />
                 <ComparisonRow feature="Custom Integrations" starter={false} professional={false} enterprise={true} />
                 <ComparisonRow feature="SLA Guarantee" starter={false} professional={false} enterprise={true} />
               </tbody>

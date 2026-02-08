@@ -156,41 +156,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Trusted by Quality Teams
-            </h2>
-            <p className="text-xl text-gray-600">
-              From startups to enterprise organizations
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <TestimonialCard
-              quote="Finally, a document control system that doesn't require a PhD to use. Our quality team was up and running in hours."
-              author="Sarah Chen"
-              role="Quality Manager"
-              company="MedTech Solutions"
-            />
-            <TestimonialCard
-              quote="The approval workflows are exactly what we needed for ISO 9001 compliance. Audit trails are comprehensive and easy to export."
-              author="Michael Rodriguez"
-              role="QA Director"
-              company="Precision Manufacturing"
-            />
-            <TestimonialCard
-              quote="Love the prototype to production workflow. We can develop and test documents before making them official."
-              author="Jennifer Park"
-              role="Compliance Officer"
-              company="BioPharm Inc"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center">
@@ -241,24 +206,6 @@ function FeaturePreview({ icon, title, description }: { icon: React.ReactNode, t
       <div className="flex justify-center mb-4">{icon}</div>
       <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
       <p className="text-gray-600">{description}</p>
-    </div>
-  )
-}
-
-// Testimonial Card Component
-function TestimonialCard({ quote, author, role, company }: { quote: string, author: string, role: string, company: string }) {
-  return (
-    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-      <div className="mb-4">
-        <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-        </svg>
-      </div>
-      <p className="text-gray-700 mb-6 italic">"{quote}"</p>
-      <div>
-        <p className="font-semibold text-gray-900">{author}</p>
-        <p className="text-sm text-gray-600">{role}, {company}</p>
-      </div>
     </div>
   )
 }
