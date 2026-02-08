@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import Logo from '@/components/Logo'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -180,9 +181,9 @@ export default function SignupPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <FileText className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">BaselineDocs</span>
+            <Link href="/" className="flex items-center space-x-3">
+              <Logo className="h-8 w-8" />
+              <span className="text-xl font-bold text-gray-900">Baseline Docs</span>
             </Link>
             <Link 
               href="/signin" 
@@ -198,7 +199,7 @@ export default function SignupPage() {
       <div className="max-w-md mx-auto mt-16 px-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h1>
-          <p className="text-gray-600 mb-8">Get started with your 14-day free trial</p>
+          <p className="text-gray-600 mb-8">Get started with your 30-day free trial</p>
 
           {errors.general && (
             <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
