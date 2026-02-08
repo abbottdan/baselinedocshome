@@ -13,20 +13,6 @@ export default function SignupPage() {
   const [subdomainStatus, setSubdomainStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [debugInfo, setDebugInfo] = useState<string[]>([])
-
-  // Debug logging
-  const addDebug = (message: string) => {
-    console.log('[DEBUG]', message)
-    setDebugInfo(prev => [...prev, `${new Date().toISOString()}: ${message}`])
-  }
-
-  useEffect(() => {
-    addDebug('Component mounted')
-    addDebug(`NEXT_PUBLIC_SUPABASE_URL: ${process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET'}`)
-    addDebug(`NEXT_PUBLIC_SUPABASE_ANON_KEY: ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET (length: ' + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length + ')' : 'NOT SET'}`)
-    addDebug(`NEXT_PUBLIC_SITE_URL: ${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}`)
-  }, [])
 
   // Check subdomain availability
   const checkSubdomain = async (subdomain: string) => {
@@ -35,7 +21,6 @@ export default function SignupPage() {
       return
     }
 
-    addDebug(`Checking subdomain: ${subdomain}`)
     setSubdomainStatus('checking')
     
     try {
@@ -45,7 +30,6 @@ export default function SignupPage() {
         body: JSON.stringify({ subdomain }),
       })
       const data = await res.json()
-      addDebug(`Subdomain check result: ${JSON.stringify(data)}`)
       
       setSubdomainStatus(data.available ? 'available' : 'taken')
       if (!data.available) {
@@ -59,7 +43,6 @@ export default function SignupPage() {
       }
     } catch (error) {
       console.error('Error checking subdomain:', error)
-      addDebug(`Error checking subdomain: ${error}`)
       setSubdomainStatus('idle')
     }
   }
@@ -105,21 +88,17 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    addDebug('Form submitted')
     
     if (!validateForm()) {
-      addDebug('Validation failed')
       return
     }
     
     if (subdomainStatus !== 'available') {
-      addDebug('Subdomain not available')
       setErrors({ subdomain: 'Please wait for subdomain availability check' })
       return
     }
     
     setIsSubmitting(true)
-    addDebug('Starting Google OAuth flow...')
     
     try {
       // Store signup data in sessionStorage for after OAuth
@@ -129,22 +108,16 @@ export default function SignupPage() {
         timestamp: new Date().toISOString(),
       }
       sessionStorage.setItem('pendingSignup', JSON.stringify(signupData))
-      addDebug(`Stored signup data in sessionStorage: ${JSON.stringify(signupData)}`)
       
       // Redirect to Supabase OAuth
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
       const redirectUrl = `${window.location.origin}/api/auth/callback`
       
-      addDebug(`Supabase URL: ${supabaseUrl}`)
-      addDebug(`Redirect URL: ${redirectUrl}`)
-      
       const authUrl = `${supabaseUrl}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}`
-      addDebug(`Auth URL: ${authUrl}`)
       
       window.location.href = authUrl
     } catch (error) {
       console.error('Error starting OAuth:', error)
-      addDebug(`Error starting OAuth: ${error}`)
       setErrors({ general: 'Failed to start sign up process. Please try again.' })
       setIsSubmitting(false)
     }
@@ -347,22 +320,6 @@ export default function SignupPage() {
 
         </div>
       </div>
-
-      {/* Debug Info (collapsible) */}
-      {debugInfo.length > 0 && (
-        <details className="max-w-4xl mx-auto px-4 pb-8">
-          <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
-            ▶ Debug Info ({debugInfo.length} logs)
-          </summary>
-          <div className="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 max-h-64 overflow-y-auto">
-            {debugInfo.map((log, i) => (
-              <div key={i} className="text-xs font-mono text-gray-600 mb-1">
-                {log}
-              </div>
-            ))}
-          </div>
-        </details>
-      )}
     </div>
   )
 }
