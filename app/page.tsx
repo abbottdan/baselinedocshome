@@ -57,7 +57,7 @@ export default function HomePage() {
                 </Link>
               </div>
               <p className="text-sm text-gray-500 mt-4">
-                14-day free trial • No credit card required
+                30-day free trial • No credit card required
               </p>
             </div>
             <div className="relative">
@@ -163,7 +163,7 @@ export default function HomePage() {
             Ready to streamline your document control?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Start your 14-day free trial. No credit card required.
+            Start your 30-day free trial. No credit card required.
           </p>
           <Link
             href="/signup"
