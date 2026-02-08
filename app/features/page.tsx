@@ -79,14 +79,14 @@ export default function FeaturesPage() {
             <FeatureCard
               icon={<AuditIcon />}
               title="Complete Audit Trail"
-              description="Every action logged with timestamp and user. Track document lifecycle from creation to obsolescence. Export audit reports for compliance."
+              description="Every action logged with timestamp and user. Track document lifecycle from creation to obsolescence. Full traceability for compliance needs."
             />
 
             {/* Search & Filter */}
             <FeatureCard
               icon={<SearchIcon />}
               title="Advanced Search"
-              description="Find documents instantly by number, title, or content. Filter by type, status, project, or date range. Save frequently used searches."
+              description="Find documents instantly by number or title. Filter by type, status, project, or date range. Sort and organize documents your way."
             />
 
             {/* File Management */}
@@ -100,7 +100,7 @@ export default function FeaturesPage() {
             <FeatureCard
               icon={<ProjectIcon />}
               title="Project Association"
-              description="Link documents to projects with P-##### codes. Track all documents related to a project. Filter and report by project."
+              description="Link documents to projects with P-##### codes. Track all documents related to a project. Filter documents by project number."
             />
 
             {/* Access Control */}
@@ -127,8 +127,8 @@ export default function FeaturesPage() {
             {/* Compliance */}
             <FeatureCard
               icon={<ComplianceIcon />}
-              title="Compliance Ready"
-              description="Built for ISO 9001, FDA 21 CFR Part 11, and other quality standards. Immutable audit logs. Electronic signatures ready. Validation documentation available."
+              title="Quality Management Ready"
+              description="Comprehensive audit trails with timestamp and user tracking. Version control and approval workflows designed to support ISO 9001 document control requirements."
             />
 
           </div>

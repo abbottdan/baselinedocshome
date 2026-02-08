@@ -126,12 +126,12 @@ export default function HomePage() {
             <FeaturePreview
               icon={<AuditIcon />}
               title="Audit Trail"
-              description="Every action logged with timestamp and user. Export reports for compliance audits."
+              description="Every action logged with timestamp and user. Full traceability for compliance and quality audits."
             />
             <FeaturePreview
               icon={<SearchIcon />}
               title="Advanced Search"
-              description="Find documents instantly by number, title, type, status, or project. Save frequent searches."
+              description="Find documents instantly by number, title, type, status, or project. Powerful filtering and sorting."
             />
             <FeaturePreview
               icon={<SecurityIcon />}
@@ -140,8 +140,8 @@ export default function HomePage() {
             />
             <FeaturePreview
               icon={<ComplianceIcon />}
-              title="Compliance Ready"
-              description="Built for ISO 9001, FDA 21 CFR Part 11, and other quality standards. Validation documentation available."
+              title="Quality Management Ready"
+              description="Designed to support ISO 9001 document control requirements with comprehensive audit trails and approval workflows."
             />
           </div>
 
