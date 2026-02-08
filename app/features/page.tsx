@@ -107,7 +107,7 @@ export default function FeaturesPage() {
             <FeatureCard
               icon={<SecurityIcon />}
               title="Role-Based Permissions"
-              description="Tenant isolation for multi-organization support. Admin and user roles with granular permissions. Draft documents private until released."
+              description="Admin and user roles with granular permissions. Draft documents private until released. Secure access control for your organization."
             />
 
             {/* Dashboard */}

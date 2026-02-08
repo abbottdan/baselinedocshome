@@ -1,149 +1,232 @@
 import Link from 'next/link'
-import { ArrowRight, Check, FileText, Users, Shield, Zap } from 'lucide-react'
+import Logo from '@/components/Logo'
 
-export default function LandingPage() {
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold">BaselineDocs</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/features" className="text-gray-600 hover:text-gray-900">Features</Link>
-            <Link href="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link>
-            <Link href="/signup" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Start Free Trial
+      {/* Navigation */}
+      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center space-x-3">
+              <Logo className="h-8 w-8" />
+              <span className="text-xl font-bold text-gray-900">Baseline Docs</span>
             </Link>
+            <div className="flex items-center space-x-8">
+              <Link href="/features" className="text-gray-600 hover:text-gray-900">
+                Features
+              </Link>
+              <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
+                Pricing
+              </Link>
+              <Link 
+                href="/signup"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
-        </nav>
-      </header>
-
-      {/* Hero */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-          Document Control for<br />
-          <span className="text-blue-600">Modern Teams</span>
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Streamline your document control process with version control, approval workflows,
-          and compliance tracking. Built for teams that move fast without breaking things.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link 
-            href="/signup" 
-            className="px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-semibold hover:bg-blue-700 flex items-center gap-2"
-          >
-            Start Free Trial <ArrowRight className="h-5 w-5" />
-          </Link>
-          <Link 
-            href="/features" 
-            className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg text-lg font-semibold hover:border-gray-400"
-          >
-            Learn More
-          </Link>
         </div>
-        <p className="text-sm text-gray-500 mt-4">
-          Free 14-day trial • No credit card required • Cancel anytime
-        </p>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+                Document Control for Quality Management Systems
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Purpose-built for regulated industries. Version control, approval workflows, 
+                and complete audit trails in one powerful platform.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/signup"
+                  className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+                >
+                  Start Free Trial
+                </Link>
+                <Link
+                  href="/features"
+                  className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:border-gray-400 transition-colors text-center"
+                >
+                  View Features
+                </Link>
+              </div>
+              <p className="text-sm text-gray-500 mt-4">
+                14-day free trial • No credit card required
+              </p>
+            </div>
+            <div className="relative">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <Logo className="h-12 w-12" />
+                    <div>
+                      <div className="text-2xl font-bold text-gray-900">FORM-00042v2</div>
+                      <div className="text-sm text-gray-500">Quality Inspection Form</div>
+                    </div>
+                  </div>
+                  <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Released
+                  </span>
+                </div>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Approved by 3 reviewers
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Version history tracked
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Complete audit trail
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          Everything you need to manage documents
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard 
-            icon={<FileText className="h-10 w-10 text-blue-600" />}
-            title="Version Control"
-            description="Track every change with alphabetic (Prototype) and numeric (Production) versioning. Never lose a document version again."
-          />
-          <FeatureCard 
-            icon={<Users className="h-10 w-10 text-blue-600" />}
-            title="Approval Workflows"
-            description="Route documents through multi-approver reviews with comments and rejection handling. Keep everyone in the loop."
-          />
-          <FeatureCard 
-            icon={<Shield className="h-10 w-10 text-blue-600" />}
-            title="Audit Trail"
-            description="Complete audit logs track every action. Know who did what, when, and why for compliance and accountability."
-          />
-          <FeatureCard 
-            icon={<Zap className="h-10 w-10 text-blue-600" />}
-            title="Fast Search"
-            description="Find any document instantly with powerful search and filtering. Filter by type, status, project, or creator."
-          />
-          <FeatureCard 
-            icon={<FileText className="h-10 w-10 text-blue-600" />}
-            title="Multi-File Support"
-            description="Attach multiple files to each document. PDFs, images, spreadsheets - we support them all."
-          />
-          <FeatureCard 
-            icon={<Shield className="h-10 w-10 text-blue-600" />}
-            title="Role-Based Access"
-            description="Control who can see, edit, and approve documents with granular permissions and tenant isolation."
-          />
+      {/* Features Preview */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Everything You Need for Document Control
+            </h2>
+            <p className="text-xl text-gray-600">
+              Built for compliance, designed for simplicity
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <FeaturePreview
+              icon={<VersionIcon />}
+              title="Version Control"
+              description="Automatic numbering with alphabetic versions for prototypes (vA, vB) and numeric for production (v1, v2)."
+            />
+            <FeaturePreview
+              icon={<ApprovalIcon />}
+              title="Approval Workflows"
+              description="Multi-approver routing with status tracking. Rejection workflows with required comments."
+            />
+            <FeaturePreview
+              icon={<AuditIcon />}
+              title="Audit Trail"
+              description="Every action logged with timestamp and user. Export reports for compliance audits."
+            />
+            <FeaturePreview
+              icon={<SearchIcon />}
+              title="Advanced Search"
+              description="Find documents instantly by number, title, type, status, or project. Save frequent searches."
+            />
+            <FeaturePreview
+              icon={<SecurityIcon />}
+              title="Access Control"
+              description="Role-based permissions with admin and user roles. Draft documents stay private until released."
+            />
+            <FeaturePreview
+              icon={<ComplianceIcon />}
+              title="Compliance Ready"
+              description="Built for ISO 9001, FDA 21 CFR Part 11, and other quality standards. Validation documentation available."
+            />
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/features"
+              className="text-blue-600 hover:text-blue-700 font-semibold text-lg"
+            >
+              View all features →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Trusted by Quality Teams
+            </h2>
+            <p className="text-xl text-gray-600">
+              From startups to enterprise organizations
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <TestimonialCard
+              quote="Finally, a document control system that doesn't require a PhD to use. Our quality team was up and running in hours."
+              author="Sarah Chen"
+              role="Quality Manager"
+              company="MedTech Solutions"
+            />
+            <TestimonialCard
+              quote="The approval workflows are exactly what we needed for ISO 9001 compliance. Audit trails are comprehensive and easy to export."
+              author="Michael Rodriguez"
+              role="QA Director"
+              company="Precision Manufacturing"
+            />
+            <TestimonialCard
+              quote="Love the prototype to production workflow. We can develop and test documents before making them official."
+              author="Jennifer Park"
+              role="Compliance Officer"
+              company="BioPharm Inc"
+            />
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">
+      <section className="py-20 px-4 bg-blue-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-white mb-6">
             Ready to streamline your document control?
           </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join teams already using BaselineDocs to manage their critical documents
+          <p className="text-xl text-blue-100 mb-8">
+            Start your 14-day free trial. No credit card required.
           </p>
-          <Link 
-            href="/signup" 
-            className="inline-block px-8 py-4 bg-white text-blue-600 rounded-lg text-lg font-semibold hover:bg-gray-100"
+          <Link
+            href="/signup"
+            className="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-50 transition-colors"
           >
-            Start Your Free Trial
+            Get Started Free
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <FileText className="h-6 w-6 text-blue-600" />
-                <span className="font-bold">BaselineDocs</span>
-              </div>
-              <p className="text-sm text-gray-600">
-                Document control for modern teams
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/features">Features</Link></li>
-                <li><Link href="/pricing">Pricing</Link></li>
-                <li><Link href="/signup">Sign Up</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/legal/terms">Terms of Service</Link></li>
-                <li><Link href="/legal/privacy">Privacy Policy</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <p className="text-sm text-gray-600">
-                hello@baselinedocs.com
-              </p>
-            </div>
+      <footer className="bg-gray-900 text-gray-400 py-12 px-4">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <Logo className="h-8 w-8" />
+            <span className="text-xl font-bold text-white">Baseline Docs</span>
           </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600">
-            © 2026 BaselineDocs. All rights reserved.
+          <p className="mb-4">© 2025 Baseline Docs. All rights reserved.</p>
+          <div className="flex justify-center space-x-6">
+            <Link href="/features" className="hover:text-white transition-colors">
+              Features
+            </Link>
+            <Link href="/pricing" className="hover:text-white transition-colors">
+              Pricing
+            </Link>
+            <Link href="/signup" className="hover:text-white transition-colors">
+              Sign Up
+            </Link>
           </div>
         </div>
       </footer>
@@ -151,12 +234,92 @@ export default function LandingPage() {
   )
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+// Feature Preview Component
+function FeaturePreview({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="p-6 border rounded-xl bg-white hover:shadow-lg transition">
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <div className="text-center">
+      <div className="flex justify-center mb-4">{icon}</div>
+      <h3 className="text-xl font-semibold text-gray-900 mb-3">{title}</h3>
       <p className="text-gray-600">{description}</p>
+    </div>
+  )
+}
+
+// Testimonial Card Component
+function TestimonialCard({ quote, author, role, company }: { quote: string, author: string, role: string, company: string }) {
+  return (
+    <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+      <div className="mb-4">
+        <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+        </svg>
+      </div>
+      <p className="text-gray-700 mb-6 italic">"{quote}"</p>
+      <div>
+        <p className="font-semibold text-gray-900">{author}</p>
+        <p className="text-sm text-gray-600">{role}, {company}</p>
+      </div>
+    </div>
+  )
+}
+
+// Feature Icons
+function VersionIcon() {
+  return (
+    <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    </div>
+  )
+}
+
+function ApprovalIcon() {
+  return (
+    <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+  )
+}
+
+function AuditIcon() {
+  return (
+    <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+    </div>
+  )
+}
+
+function SearchIcon() {
+  return (
+    <div className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+  )
+}
+
+function SecurityIcon() {
+  return (
+    <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      </svg>
+    </div>
+  )
+}
+
+function ComplianceIcon() {
+  return (
+    <div className="w-16 h-16 bg-emerald-100 rounded-xl flex items-center justify-center">
+      <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
     </div>
   )
 }
