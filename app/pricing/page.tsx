@@ -57,9 +57,9 @@ export default function PricingPage() {
               period="per month"
               description="Perfect for small teams getting started with document control"
               features={[
-                "10 users",
-                "150 documents",
-                "100 MB storage",
+                "25 users",
+                "3,000 documents",
+                "10 GB storage",
                 "Version control",
                 "Approval workflows",
                 "Basic audit trail",
@@ -77,9 +77,9 @@ export default function PricingPage() {
               period="per month"
               description="For growing teams with advanced document control needs"
               features={[
-                "50 users",
-                "500 documents",
-                "2 GB storage",
+                "100 users",
+                "25,000 documents",
+                "100 GB storage",
                 "Everything in Starter, plus:",
                 "Priority email support",
                 "Onboarding assistance",
@@ -137,27 +137,28 @@ export default function PricingPage() {
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="text-left py-4 px-6 text-gray-600 font-semibold">Feature</th>
+                  <th className="text-center py-4 px-6 text-gray-500 font-bold">Free Trial</th>
                   <th className="text-center py-4 px-6 text-gray-900 font-bold">Starter</th>
                   <th className="text-center py-4 px-6 text-gray-900 font-bold">Professional</th>
                   <th className="text-center py-4 px-6 text-gray-900 font-bold">Enterprise</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                <ComparisonRow feature="Users" starter="10" professional="50" enterprise="Unlimited" />
-                <ComparisonRow feature="Documents" starter="150" professional="500" enterprise="Unlimited" />
-                <ComparisonRow feature="Storage" starter="100 MB" professional="2 GB" enterprise="Unlimited" />
-                <ComparisonRow feature="Version Control" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Approval Workflows" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Audit Trail" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Document Types" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Search & Filter" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Project Association" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="File Attachments" starter={true} professional={true} enterprise={true} />
-                <ComparisonRow feature="Email Support" starter="Standard" professional="Priority" enterprise="24/7" />
-                <ComparisonRow feature="Onboarding Call" starter={false} professional={true} enterprise={true} />
-                <ComparisonRow feature="Account Manager" starter={false} professional={false} enterprise={true} />
-                <ComparisonRow feature="Custom Integrations" starter={false} professional={false} enterprise={true} />
-                <ComparisonRow feature="SLA Guarantee" starter={false} professional={false} enterprise={true} />
+                <ComparisonRow feature="Users" trial="5" starter="25" professional="100" enterprise="Unlimited" />
+                <ComparisonRow feature="Documents" trial="150" starter="3,000" professional="25,000" enterprise="Unlimited" />
+                <ComparisonRow feature="Storage" trial="1 GB" starter="10 GB" professional="100 GB" enterprise="Unlimited" />
+                <ComparisonRow feature="Version Control" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Approval Workflows" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Audit Trail" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Document Types" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Search & Filter" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Project Association" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="File Attachments" trial={true} starter={true} professional={true} enterprise={true} />
+                <ComparisonRow feature="Email Support" trial="Standard" starter="Standard" professional="Priority" enterprise="24/7" />
+                <ComparisonRow feature="Onboarding Call" trial={false} starter={false} professional={true} enterprise={true} />
+                <ComparisonRow feature="Account Manager" trial={false} starter={false} professional={false} enterprise={true} />
+                <ComparisonRow feature="Custom Integrations" trial={false} starter={false} professional={false} enterprise={true} />
+                <ComparisonRow feature="SLA Guarantee" trial={false} starter={false} professional={false} enterprise={true} />
               </tbody>
             </table>
           </div>
@@ -392,11 +393,13 @@ function PricingCard({
 // Comparison Row Component
 function ComparisonRow({
   feature,
+  trial,
   starter,
   professional,
   enterprise,
 }: {
   feature: string
+  trial: boolean | string
   starter: boolean | string
   professional: boolean | string
   enterprise: boolean | string
@@ -419,6 +422,7 @@ function ComparisonRow({
   return (
     <tr>
       <td className="py-4 px-6 text-gray-700">{feature}</td>
+      <td className="py-4 px-6 text-center bg-gray-50">{renderCell(trial)}</td>
       <td className="py-4 px-6 text-center">{renderCell(starter)}</td>
       <td className="py-4 px-6 text-center">{renderCell(professional)}</td>
       <td className="py-4 px-6 text-center">{renderCell(enterprise)}</td>
