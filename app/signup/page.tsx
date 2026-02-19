@@ -92,7 +92,7 @@ export default function SignupPage() {
       setErrors({ subdomain: 'Please wait for subdomain availability check' })
       return false
     }
-    sessionStorage.setItem('signup_data', JSON.stringify({
+    localStorage.setItem('signup_data', JSON.stringify({
       companyName: formData.companyName,
       subdomain: formData.subdomain,
       timestamp: Date.now(),
@@ -146,8 +146,10 @@ export default function SignupPage() {
         },
       })
       if (error) throw error
-      // Session is set automatically after signUp — go to complete page
-      window.location.href = `${window.location.origin}/signup/complete`
+      // Store email so the verify page can display it and handle resend
+      localStorage.setItem('signup_email', emailData.email)
+      // Email confirmation required — send user to holding page
+      window.location.href = `${window.location.origin}/signup/verify`
     } catch (error: any) {
       console.error('Email signup error:', error)
       setErrors({ general: error.message || 'Failed to create account. Please try again.' })

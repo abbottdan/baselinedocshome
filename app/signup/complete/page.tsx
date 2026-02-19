@@ -17,8 +17,8 @@ export default function SignupCompletePage() {
     try {
       console.log('[SignupComplete] Starting signup completion')
       
-      // Get signup data from sessionStorage
-      const signupDataStr = sessionStorage.getItem('signup_data')
+      // Get signup data from localStorage (persists across tabs/email confirmation links)
+      const signupDataStr = localStorage.getItem('signup_data')
       if (!signupDataStr) {
         throw new Error('Signup data not found. Please start the signup process again.')
       }
@@ -88,7 +88,8 @@ export default function SignupCompletePage() {
       console.log('[SignupComplete] Signup completed successfully:', result)
 
       // Clear signup data
-      sessionStorage.removeItem('signup_data')
+      localStorage.removeItem('signup_data')
+      localStorage.removeItem('signup_email')
 
       // Redirect to success page
       setStatus('Success! Redirecting to your workspace...')
