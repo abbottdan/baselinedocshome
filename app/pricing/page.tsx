@@ -1,5 +1,16 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+
+export const metadata: Metadata = {
+  title: 'Pricing | BaselineDocs - Simple, Transparent Plans',
+  description: 'Simple, transparent pricing for document control software. Start with a 14-day free trial. No credit card required.',
+  openGraph: {
+    title: 'Pricing | BaselineDocs',
+    description: 'Simple, transparent pricing for document control. Start free, no credit card required.',
+    url: 'https://www.baselinedocs.com/pricing',
+  },
+}
 
 export default function PricingPage() {
   return (

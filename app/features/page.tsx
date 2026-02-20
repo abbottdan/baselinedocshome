@@ -1,5 +1,16 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+
+export const metadata: Metadata = {
+  title: 'Features | BaselineDocs - Document Control Software',
+  description: 'Explore BaselineDocs features: version control, multi-approver workflows, audit trails, custom document types, and ISO 9001-ready compliance tools for regulated industries.',
+  openGraph: {
+    title: 'Features | BaselineDocs',
+    description: 'Version control, approval workflows, and complete audit trails for quality management systems.',
+    url: 'https://www.baselinedocs.com/features',
+  },
+}
 
 export default function FeaturesPage() {
   return (
