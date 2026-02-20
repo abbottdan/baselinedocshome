@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     title: 'BaselineDocs - Document Control for Modern Teams',
     description: 'Version control, approval workflows, and compliance tracking for quality management systems.',
   },
+  verification: {
+    google: '0aVetCsBxt_WOeXc11C2Kml-8MTYzpkWKvWdOoClBsw',
+  },
 };
 
 export default function RootLayout({
