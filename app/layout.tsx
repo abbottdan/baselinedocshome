@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: 'Version control, approval workflows, and compliance tracking for quality management systems.',
   },
   verification: {
-    google: '0aVetCsBxt_WOeXc11C2Kml-8MTYzpkWKvWdOoClBsw',
+    google: 'j4lxs7P85HywcD0KshopP0LymuTmUwHZQaacgY5Ixf8',
   },
 };
 
