@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   },
   description: 'Streamline your document control process with BaselineDocs. Version control, approval workflows, and compliance tracking made simple.',
   metadataBase: new URL('https://www.baselinedocs.com'),
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     type: 'website',
     siteName: 'BaselineDocs',
