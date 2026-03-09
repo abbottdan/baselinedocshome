@@ -206,10 +206,6 @@ export default function PricingPage() {
               answer="Sign up and get full access for 30 days — no credit card required. At the end of the trial you can choose to continue with a paid plan or cancel with no obligation."
             />
             <FAQItem
-              question="What happens when I go over my seat limit?"
-              answer="We use soft blocking — we'll notify you as you approach your seat limit. Overage seats are billed at $5/seat (Starter) or $7/seat (Pro) per month. We won't cut off your team without warning."
-            />
-            <FAQItem
               question="How does storage overage work?"
               answer="You can add storage in 10 GB blocks at $5/mo each on both Starter and Pro. On the free trial, storage is capped at 1 GB with no add-ons available."
             />
@@ -222,12 +218,8 @@ export default function PricingPage() {
               answer="Yes. You can upgrade or downgrade at any time. Changes take effect immediately and billing is prorated."
             />
             <FAQItem
-              question="Do you offer annual billing?"
-              answer="Yes — contact us for annual billing with discounted rates."
-            />
-            <FAQItem
               question="What payment methods do you accept?"
-              answer="All major credit cards (Visa, Mastercard, Amex) via Stripe. Enterprise customers can pay by invoice."
+              answer="We accept all major credit cards (Visa, Mastercard, Amex) via Stripe."
             />
           </div>
         </div>

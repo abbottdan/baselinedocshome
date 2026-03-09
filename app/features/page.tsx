@@ -111,7 +111,7 @@ export default function FeaturesPage() {
             <FeatureCard
               icon={<ProjectIcon />}
               title="Project Association"
-              description="Link documents to projects with P-##### codes. Track all documents related to a project. Filter documents by project number."
+              description="Link documents to projects by name or code. Group and track all documents related to a project. Filter the document list by project to see exactly what's in scope."
             />
 
             {/* Access Control */}
