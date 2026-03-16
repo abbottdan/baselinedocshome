@@ -1,21 +1,38 @@
-import Image from 'next/image'
+// BaselineDocs brand icon
+// Dark variant: upper paths #2563eb (Clarity Blue), lower bracket #1e293b — use on light backgrounds
+// Light variant: upper paths #2563eb (Clarity Blue), lower bracket #ffffff — use on dark backgrounds
 
-export default function Logo({ className = "h-8 w-8" }: { className?: string }) {
-  // Parse height from className for next/image sizing (e.g. "h-8 w-8" → 32px)
-  const sizeMap: Record<string, number> = {
-    'h-6': 24, 'h-7': 28, 'h-8': 32, 'h-10': 40, 'h-12': 48, 'h-16': 64,
-  }
-  const heightClass = className.split(' ').find(c => c.startsWith('h-')) ?? 'h-8'
-  const size = sizeMap[heightClass] ?? 32
-
-  return (
-    <Image
-      src="/logo.svg"
-      alt="ClearStride logo"
-      width={size}
-      height={size}
-      className={className}
-      priority
+const upperPaths = (
+  <>
+    <path
+      fill="#2563eb"
+      d="m 13.022533,3.2732986 -2.099223,2.3599689 4.050087,3.578462 a 0.30614348,0.30614348 0 0 0 0.508842,-0.227273 l 0.03413,-4.8641081 a 0.51858676,0.51858676 0 0 0 -0.436112,-0.515627 z"
     />
+    <path
+      fill="#2563eb"
+      d="M 8.656148,7.0563195 13.407742,1.954023 A 0.10114652,0.10114652 0 0 0 13.333722,1.7839441 L 8.270862,1.7837098 A 1.3019397,1.3019397 0 0 0 7.3515816,2.1636561 L 4.8112554,4.6963554 5.5555335,4.7374192 A 1.5363371,1.5363371 0 0 1 6.494279,5.1255508 Z"
+    />
+  </>
+)
+
+// Default export — dark variant for light backgrounds (nav, cards)
+export default function Logo({ className = 'h-8 w-8' }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.487781 14.525135" className={className} aria-label="BaselineDocs" role="img">
+      {upperPaths}
+      <path fill="#1e293b" d="m 5.992072,12.680556 5.164163,-5.1955025 a 0.61372118,0.61372118 0 0 1 0.846183,-0.02321 l 2.525166,2.276136 a 0.43859335,0.43859335 0 0 1 0.01326,0.6391005 l -1.898424,1.859586 a 1.600884,1.600884 0 0 1 -1.124106,0.457245 z" />
+      <path fill="#1e293b" d="M 5.6631306,11.928604 8.959331,8.7248205 a 0.34229762,0.34229762 0 0 0 -0.0051,-0.495726 L 6.0646308,5.532767 A 1.3735631,1.3735631 0 0 0 5.1233233,5.1634786 l -2.8615602,0.0088 A 0.65092782,0.65092782 0 0 0 1.6128902,5.8314475 l 0.037155,2.93521 a 0.82652486,0.82652486 0 0 0 0.2683444,0.599171 l 2.8145168,2.5766695 a 0.67788926,0.67788926 0 0 0 0.9302246,-0.01389 z" />
+    </svg>
+  )
+}
+
+// Light variant — white lower bracket for dark backgrounds (footer, dark panels)
+export function LogoLight({ className = 'h-8 w-8' }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.487781 14.525135" className={className} aria-label="BaselineDocs" role="img">
+      {upperPaths}
+      <path fill="#ffffff" d="m 5.992072,12.680556 5.164163,-5.1955025 a 0.61372118,0.61372118 0 0 1 0.846183,-0.02321 l 2.525166,2.276136 a 0.43859335,0.43859335 0 0 1 0.01326,0.6391005 l -1.898424,1.859586 a 1.600884,1.600884 0 0 1 -1.124106,0.457245 z" />
+      <path fill="#ffffff" d="M 5.6631306,11.928604 8.959331,8.7248205 a 0.34229762,0.34229762 0 0 0 -0.0051,-0.495726 L 6.0646308,5.532767 A 1.3735631,1.3735631 0 0 0 5.1233233,5.1634786 l -2.8615602,0.0088 A 0.65092782,0.65092782 0 0 0 1.6128902,5.8314475 l 0.037155,2.93521 a 0.82652486,0.82652486 0 0 0 0.2683444,0.599171 l 2.8145168,2.5766695 a 0.67788926,0.67788926 0 0 0 0.9302246,-0.01389 z" />
+    </svg>
   )
 }

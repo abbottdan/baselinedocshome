@@ -9,8 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // ClearStride brand foundation
+        brand: {
+          slate:      '#1E293B',
+          slate2:     '#475569',
+          'light-slate': '#9AA3B8',
+          amber:      '#D97706',
+        },
+        // BaselineDocs accent — Clarity Blue
         primary: {
-          50: '#eff6ff',
+          50:  '#eff6ff',
           100: '#dbeafe',
           200: '#bfdbfe',
           300: '#93c5fd',
