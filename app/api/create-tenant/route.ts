@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { platformAdmin, productsAdmin } from '@/lib/supabase'
 import { stripe } from '@/lib/stripe'
 import { signupSchema } from '@/lib/validations'
 import { isReservedSubdomain } from '@/lib/utils'
@@ -7,8 +7,7 @@ import { isReservedSubdomain } from '@/lib/utils'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Validate input
+
     const validation = signupSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
@@ -19,7 +18,6 @@ export async function POST(request: NextRequest) {
 
     const { companyName, subdomain, fullName, email, password } = validation.data
 
-    // Double-check subdomain
     if (isReservedSubdomain(subdomain)) {
       return NextResponse.json(
         { error: 'Subdomain is reserved' },
@@ -27,8 +25,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if subdomain exists
-    const { data: existingTenant } = await supabaseAdmin
+    // Check subdomain availability in platform.tenants
+    const { data: existingTenant } = await platformAdmin
+      .schema('platform')
       .from('tenants')
       .select('id')
       .eq('subdomain', subdomain)
@@ -41,8 +40,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if email exists
-    const { data: existingUser } = await supabaseAdmin
+    // Check email availability in shared.users
+    const { data: existingUser } = await productsAdmin
+      .schema('shared')
       .from('users')
       .select('id')
       .eq('email', email)
@@ -55,13 +55,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create tenant first
-    const { data: tenant, error: tenantError } = await supabaseAdmin
+    // Create tenant in platform.tenants
+    const { data: tenant, error: tenantError } = await platformAdmin
+      .schema('platform')
       .from('tenants')
       .insert({
         company_name: companyName,
         subdomain: subdomain,
-        billing_email: email,
+        auth_method: 'password',
+        is_active: true,
       })
       .select()
       .single()
@@ -74,76 +76,85 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create Stripe customer
-    let stripeCustomer
+    // Create Stripe customer and update tenant with stripe_customer_id
+    let stripeCustomerId: string | null = null
     try {
-      stripeCustomer = await stripe.customers.create({
+      const stripeCustomer = await stripe.customers.create({
         email: email,
         name: companyName,
-        metadata: {
-          tenant_id: tenant.id,
-          subdomain: subdomain,
-        },
+        metadata: { tenant_id: tenant.id, subdomain },
       })
+      stripeCustomerId = stripeCustomer.id
 
-      // Update tenant with Stripe customer ID
-      await supabaseAdmin
+      await platformAdmin
+        .schema('platform')
         .from('tenants')
-        .update({ stripe_customer_id: stripeCustomer.id })
+        .update({ stripe_customer_id: stripeCustomerId })
         .eq('id', tenant.id)
     } catch (stripeError) {
       console.error('Stripe customer creation error:', stripeError)
-      // Continue anyway - can be fixed manually
+      // Non-fatal — can be fixed manually
     }
 
-    // Create user in Supabase Auth
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    // Create auth user in products DB (auth lives there)
+    const { data: authData, error: authError } = await productsAdmin.auth.admin.createUser({
       email: email,
       password: password,
-      email_confirm: true, // Auto-confirm email
-      user_metadata: {
-        full_name: fullName,
-        tenant_id: tenant.id,
-      },
+      email_confirm: true,
+      user_metadata: { full_name: fullName, tenant_id: tenant.id },
     })
 
     if (authError || !authData.user) {
       console.error('Auth user creation error:', authError)
       // Rollback tenant
-      await supabaseAdmin.from('tenants').delete().eq('id', tenant.id)
+      await platformAdmin.schema('platform').from('tenants').delete().eq('id', tenant.id)
       return NextResponse.json(
         { error: 'Failed to create user account' },
         { status: 500 }
       )
     }
 
-    // Create user record
-    const { error: userError } = await supabaseAdmin
+    // Create user record in shared.users (no is_admin — use is_master_admin: false)
+    const { error: userError } = await productsAdmin
+      .schema('shared')
       .from('users')
       .insert({
         id: authData.user.id,
         tenant_id: tenant.id,
         email: email,
         full_name: fullName,
-        is_admin: true, // First user is admin
+        is_master_admin: false,
+        is_active: true,
       })
 
     if (userError) {
       console.error('User record creation error:', userError)
-      // User auth exists but record failed - they can still log in
     }
 
-    // Create trial billing record
-    const trialEndsAt = new Date()
-    trialEndsAt.setDate(trialEndsAt.getDate() + 14) // 14-day trial
+    // Write tenant_admin role to docs.user_roles
+    await productsAdmin
+      .schema('docs')
+      .from('user_roles')
+      .insert({
+        user_id: authData.user.id,
+        tenant_id: tenant.id,
+        role: 'tenant_admin',
+      })
 
-    await supabaseAdmin
-      .from('tenant_billing')
+    // Create trial subscription in platform.product_subscriptions
+    const trialEndsAt = new Date()
+    trialEndsAt.setDate(trialEndsAt.getDate() + 30) // 30-day trial
+
+    await platformAdmin
+      .schema('platform')
+      .from('product_subscriptions')
       .insert({
         tenant_id: tenant.id,
-        stripe_customer_id: stripeCustomer?.id || null,
+        product: 'baselinedocs',
         plan: 'trial',
         status: 'trialing',
+        stripe_customer_id: stripeCustomerId,
+        user_limit: 2,
         trial_ends_at: trialEndsAt.toISOString(),
         current_period_start: new Date().toISOString(),
         current_period_end: trialEndsAt.toISOString(),

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { platformAdmin, productsAdmin } from '@/lib/supabase'
 import { stripe } from '@/lib/stripe'
 import { isReservedSubdomain } from '@/lib/utils'
 
@@ -8,7 +8,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { userId, email, fullName, companyName, subdomain } = body
 
-    // Validate required fields
     if (!userId || !email || !companyName || !subdomain) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -16,7 +15,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate subdomain
     if (isReservedSubdomain(subdomain)) {
       return NextResponse.json(
         { error: 'Subdomain is reserved' },
@@ -24,8 +22,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if subdomain exists
-    const { data: existingTenant } = await supabaseAdmin
+    // Check subdomain availability in platform.tenants
+    const { data: existingTenant } = await platformAdmin
+      .schema('platform')
       .from('tenants')
       .select('id')
       .eq('subdomain', subdomain)
@@ -38,27 +37,30 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if user already has a tenant
-    const { data: existingUser } = await supabaseAdmin
+    // Check if user already has a tenant in shared.users
+    const { data: existingUser } = await productsAdmin
+      .schema('shared')
       .from('users')
       .select('id, tenant_id')
       .eq('id', userId)
       .single()
 
-    if (existingUser && existingUser.tenant_id) {
+    if (existingUser?.tenant_id) {
       return NextResponse.json(
         { error: 'User already has an account' },
         { status: 400 }
       )
     }
 
-    // Create tenant
-    const { data: tenant, error: tenantError } = await supabaseAdmin
+    // Create tenant in platform.tenants
+    const { data: tenant, error: tenantError } = await platformAdmin
+      .schema('platform')
       .from('tenants')
       .insert({
         company_name: companyName,
         subdomain: subdomain,
-        billing_email: email,
+        auth_method: 'google',
+        is_active: true,
       })
       .select()
       .single()
@@ -72,71 +74,80 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe customer
-    let stripeCustomer
+    let stripeCustomerId: string | null = null
     try {
-      stripeCustomer = await stripe.customers.create({
+      const stripeCustomer = await stripe.customers.create({
         email: email,
         name: companyName,
-        metadata: {
-          tenant_id: tenant.id,
-          subdomain: subdomain,
-        },
+        metadata: { tenant_id: tenant.id, subdomain },
       })
+      stripeCustomerId = stripeCustomer.id
 
-      // Update tenant with Stripe customer ID
-      await supabaseAdmin
+      await platformAdmin
+        .schema('platform')
         .from('tenants')
-        .update({ stripe_customer_id: stripeCustomer.id })
+        .update({ stripe_customer_id: stripeCustomerId })
         .eq('id', tenant.id)
     } catch (stripeError) {
       console.error('Stripe customer creation error:', stripeError)
-      // Continue anyway - can be fixed manually
     }
 
-    // Create or update user record
+    // Create or update shared.users record
     if (existingUser) {
-      // Update existing user with tenant_id
-      const { error: updateError } = await supabaseAdmin
+      // User row exists (created by auth trigger) — update with tenant + name
+      await productsAdmin
+        .schema('shared')
         .from('users')
         .update({
           tenant_id: tenant.id,
           full_name: fullName,
-          is_admin: true,
+          is_master_admin: false,
+          is_active: true,
         })
         .eq('id', userId)
-
-      if (updateError) {
-        console.error('User update error:', updateError)
-      }
     } else {
-      // Create new user record
-      const { error: userError } = await supabaseAdmin
+      // No user row yet — insert
+      const { error: userError } = await productsAdmin
+        .schema('shared')
         .from('users')
         .insert({
           id: userId,
           tenant_id: tenant.id,
           email: email,
           full_name: fullName,
-          is_admin: true,
+          is_master_admin: false,
+          is_active: true,
         })
 
       if (userError) {
         console.error('User record creation error:', userError)
-        // Continue - user can still log in
       }
     }
 
-    // Create trial billing record
-    const trialEndsAt = new Date()
-    trialEndsAt.setDate(trialEndsAt.getDate() + 14) // 14-day trial
+    // Write tenant_admin role to docs.user_roles
+    await productsAdmin
+      .schema('docs')
+      .from('user_roles')
+      .upsert({
+        user_id: userId,
+        tenant_id: tenant.id,
+        role: 'tenant_admin',
+      }, { onConflict: 'user_id,tenant_id' })
 
-    await supabaseAdmin
-      .from('tenant_billing')
+    // Create trial subscription in platform.product_subscriptions
+    const trialEndsAt = new Date()
+    trialEndsAt.setDate(trialEndsAt.getDate() + 30) // 30-day trial
+
+    await platformAdmin
+      .schema('platform')
+      .from('product_subscriptions')
       .insert({
         tenant_id: tenant.id,
-        stripe_customer_id: stripeCustomer?.id || null,
+        product: 'baselinedocs',
         plan: 'trial',
         status: 'trialing',
+        stripe_customer_id: stripeCustomerId,
+        user_limit: 2,
         trial_ends_at: trialEndsAt.toISOString(),
         current_period_start: new Date().toISOString(),
         current_period_end: trialEndsAt.toISOString(),
