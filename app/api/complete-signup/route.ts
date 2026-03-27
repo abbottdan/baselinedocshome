@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       .insert({
         company_name: companyName,
         subdomain: subdomain,
-        auth_method: ['google', 'microsoft'].includes(authMethod) ? authMethod : 'password',
+        auth_method: ['google', 'microsoft'].includes(authMethod) ? authMethod : 'email',
         is_active: true,
       })
       .select()

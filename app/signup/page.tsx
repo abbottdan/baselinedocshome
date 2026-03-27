@@ -86,7 +86,7 @@ export default function SignupPage() {
   }
 
   // Save signup data to localStorage, return false if validation fails
-  const saveSignupData = (authMethod: 'google' | 'microsoft' | 'password') => {
+  const saveSignupData = (authMethod: 'google' | 'microsoft' | 'email') => {
     if (!validateBaseFields()) return false
     if (subdomainStatus !== 'available') {
       setErrors({ subdomain: 'Please wait for subdomain availability check' })
@@ -119,7 +119,7 @@ export default function SignupPage() {
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!saveSignupData('password')) return
+    if (!saveSignupData('email')) return
 
     const emailErrors: Record<string, string> = {}
     if (!emailData.email) emailErrors.email = 'Email is required'
@@ -407,7 +407,7 @@ export default function SignupPage() {
                     </label>
                     <div className="relative">
                       <input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? 'text' : 'email'}
                         value={emailData.password}
                         onChange={(e) => setEmailData({ ...emailData, password: e.target.value })}
                         placeholder="At least 8 characters"
@@ -429,7 +429,7 @@ export default function SignupPage() {
                       Confirm password
                     </label>
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? 'text' : 'email'}
                       value={emailData.confirmPassword}
                       onChange={(e) => setEmailData({ ...emailData, confirmPassword: e.target.value })}
                       placeholder="Re-enter your password"
