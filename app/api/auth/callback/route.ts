@@ -158,6 +158,7 @@ export async function GET(request: NextRequest) {
             fullName: '${user.user_metadata?.full_name?.replace(/'/g, "\\'") || user.email?.split('@')[0] || 'User'}',
             companyName: signupData.companyName,
             subdomain: signupData.subdomain,
+            authMethod: signupData.authMethod || 'google',
           }),
         });
         

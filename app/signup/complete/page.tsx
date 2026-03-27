@@ -66,6 +66,7 @@ export default function SignupCompletePage() {
         fullName: session.user.user_metadata?.full_name || session.user.email!.split('@')[0],
         companyName: signupData.companyName,
         subdomain: signupData.subdomain,
+        authMethod: signupData.authMethod || 'password',
       }
 
       console.log('[SignupComplete] Calling complete-signup API:', completeData)

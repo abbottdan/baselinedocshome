@@ -6,7 +6,7 @@ import { isReservedSubdomain } from '@/lib/utils'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { userId, email, fullName, companyName, subdomain } = body
+    const { userId, email, fullName, companyName, subdomain, authMethod } = body
 
     if (!userId || !email || !companyName || !subdomain) {
       return NextResponse.json(
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       .insert({
         company_name: companyName,
         subdomain: subdomain,
-        auth_method: 'google',
+        auth_method: ['google', 'microsoft'].includes(authMethod) ? authMethod : 'password',
         is_active: true,
       })
       .select()

@@ -85,8 +85,8 @@ export default function SignupPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  // Save signup data to sessionStorage, return false if validation fails
-  const saveSignupData = () => {
+  // Save signup data to localStorage, return false if validation fails
+  const saveSignupData = (authMethod: 'google' | 'microsoft' | 'password') => {
     if (!validateBaseFields()) return false
     if (subdomainStatus !== 'available') {
       setErrors({ subdomain: 'Please wait for subdomain availability check' })
@@ -95,13 +95,15 @@ export default function SignupPage() {
     localStorage.setItem('signup_data', JSON.stringify({
       companyName: formData.companyName,
       subdomain: formData.subdomain,
+      authMethod,
       timestamp: Date.now(),
     }))
     return true
   }
 
   const handleOAuth = async (provider: 'google' | 'azure') => {
-    if (!saveSignupData()) return
+    const authMethod = provider === 'google' ? 'google' : 'microsoft'
+    if (!saveSignupData(authMethod)) return
     setIsSubmitting(true)
     try {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -117,7 +119,7 @@ export default function SignupPage() {
 
   const handleEmailSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!saveSignupData()) return
+    if (!saveSignupData('password')) return
 
     const emailErrors: Record<string, string> = {}
     if (!emailData.email) emailErrors.email = 'Email is required'
